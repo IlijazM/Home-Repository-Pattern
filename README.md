@@ -1,6 +1,6 @@
 # Home Repository Pattern
 
-A Home Repository is a waypoint: an AI coding agent passes through it on its way to the work and picks up what applies from there on.
+A Home Repository is shared context for an AI coding agent.
 
 It holds instructions, skills and knowledge.
 
