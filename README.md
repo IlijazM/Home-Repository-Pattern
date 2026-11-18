@@ -2,13 +2,11 @@
 
 A Home Repository is a waypoint: an AI coding agent passes through it on its way to the work and picks up what applies from there on.
 
-It holds:
+It holds instructions, skills and knowledge.
 
-- instructions
-- skills
-- knowledge
+It fixes drift: each piece lives in exactly one place instead of in copies across repositories.
 
-Without it, these are copied into every repository that needs them and drift apart. With it, each piece lives in exactly one place, and that place decides two things: what the piece applies to, and who may see it.
+It sets scope and access: where a piece lives decides what it applies to and who may see it.
 
 ## Pointers
 
@@ -26,7 +24,7 @@ To follow pointers:
 2. Go to that repository (see [Going to a repository](#going-to-a-repository)) and read its instructions first.
 3. If it is another Home Repository, repeat until you reach the repository that needs the change.
 4. Make the change there, following that repository's own instructions.
-5. If the task matches no pointer or more than one, ask.
+5. No pointer matches, or several do: ask.
 
 ## Propagation
 
@@ -41,7 +39,7 @@ An example chain. Every level is optional, and one Home Repository may cover sev
 | Organization | What everyone in the organization needs, such as approaches from its wiki |
 | Client | What the organization knows about a client and the client must not see, such as preferred code presentation |
 | Client project | What the organization knows about one project, such as how agents reach the client's internal project wiki |
-| Client project repository | Skills and instructions for working on the client's repository that stay out of it for political reasons |
+| Client project repository | Skills and instructions kept out of the client's repository itself |
 
 ## Permissions
 
@@ -49,11 +47,14 @@ Every Home Repository is an ordinary repository with its own access rights. Whoe
 
 - **Content goes where its readers are exactly right.** Put each instruction, skill or piece of knowledge into the Home Repository whose readers are exactly the people allowed to see it.
 - **Pointers are visible, targets may not be.** A pointer can be read by everyone who can read its Home Repository, even when they cannot read the target. Point to a repository only where its existence may be known.
-- **Agents have the access of their person.** An agent can follow a pointer only into repositories the person it works for can read. When access is missing, say so instead of working around it.
+- **Agents read as their person.** An agent follows only pointers its person can read. Report missing access; never work around it.
 
 ## Purposes do not mix
 
-Each Home Repository serves one purpose for one audience: a person, an organization, a client, a project. Content for another audience goes into that audience's Home Repository, however small it is. Personal details never go into an organization's Home Repository, and what a client must not see never goes into anything the client can read.
+Each Home Repository serves one audience: a person, an organization, a client or a project.
+
+- No personal details in an organization's Home Repository.
+- Nothing confidential about a client in anything that client can read.
 
 ## Rules for every Home Repository
 
