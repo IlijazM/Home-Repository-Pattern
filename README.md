@@ -1,27 +1,66 @@
 # Home Repository Pattern
 
-The definition of a **Home Repository**. Every Home Repository links here instead of explaining the pattern itself, so the definition (paths above all) lives in exactly one place.
+A Home Repository is a waypoint: an AI coding agent passes through it on its way to the work and picks up what applies from there on.
 
-## What a Home Repository is
+It holds:
 
-A Home Repository is a central repository that holds what an AI coding agent needs before it touches a project: instructions (`AGENTS.md`), skills and shared docs. Instead of copying them into every project, where they drift apart, they live in the Home Repository and are shared.
+- instructions
+- skills
+- knowledge
 
-- It **points** to other repositories: one short entry per repository, saying what it is and where it lives.
-- Each project repository keeps its own specific context. The Home Repository never copies it.
-- Home Repositories **nest**: one may point to further Home Repositories, each adding context, until the project repository is reached. Example: personal Home Repository → work Home Repository → customer Home Repository → project repository.
-- One session can work across several repositories.
+Without it, these are copied into every repository that needs them and drift apart. With it, each piece lives in exactly one place, and that place decides two things: what the piece applies to, and who may see it.
 
-## Two kinds
+## Pointers
 
-- **Personal Home Repository:** one per person, and the place where every session starts. Holds what is about that person: name, commit identity, language preferences, personal servers and accounts, and pointers to everything the person works on.
-- **Organization Home Repository:** shared by everyone who works in that organization (a company, a customer, an agency). Holds only what is true for every contributor: the organization's projects, servers, rules and tools. Nothing personal, because each contributor brings that from their own personal Home Repository.
+A Home Repository points to the repositories the agent may go to next. A pointer is a short entry that says:
+
+- what the repository is,
+- which tasks belong there,
+- where it lives (see [Repository locations](#repository-locations)), and how to reach it when that takes more than a clone.
+
+A pointer never copies the target's content. The target stays the only source of truth for what it holds.
+
+To follow pointers:
+
+1. Decide which pointer matches the task.
+2. Go to that repository (see [Going to a repository](#going-to-a-repository)) and read its instructions first.
+3. If it is another Home Repository, repeat until you reach the repository that needs the change.
+4. Make the change there, following that repository's own instructions.
+5. If the task matches no pointer or more than one, ask.
+
+## Propagation
+
+Pointers chain Home Repositories from the general to the specific. The agent starts at the top and keeps what every Home Repository on its way holds. This is **propagation**: whatever a Home Repository holds applies to everything below it. A lower Home Repository adds and narrows; it never repeats what a higher one already says.
+
+An example chain. Every level is optional, and one Home Repository may cover several:
+
+| Level | Holds, for example |
+| --- | --- |
+| Person | Personal writing style, commit identity |
+| Person in an organization | How this person reaches the organization |
+| Organization | What everyone in the organization needs, such as approaches from its wiki |
+| Client | What the organization knows about a client and the client must not see, such as preferred code presentation |
+| Client project | What the organization knows about one project, such as how agents reach the client's internal project wiki |
+| Client project repository | Skills and instructions for working on the client's repository that stay out of it for political reasons |
+
+## Permissions
+
+Every Home Repository is an ordinary repository with its own access rights. Whoever can read it sees all of it, and so does every agent working for them. That makes the access rights the permission model:
+
+- **Content goes where its readers are exactly right.** Put each instruction, skill or piece of knowledge into the Home Repository whose readers are exactly the people allowed to see it.
+- **Pointers are visible, targets may not be.** A pointer can be read by everyone who can read its Home Repository, even when they cannot read the target. Point to a repository only where its existence may be known.
+- **Agents have the access of their person.** An agent can follow a pointer only into repositories the person it works for can read. When access is missing, say so instead of working around it.
+
+## Purposes do not mix
+
+Each Home Repository serves one purpose for one audience: a person, an organization, a client, a project. Content for another audience goes into that audience's Home Repository, however small it is. Personal details never go into an organization's Home Repository, and what a client must not see never goes into anything the client can read.
 
 ## Rules for every Home Repository
 
-- Start with one line that names its kind and links here, e.g. "This is an organization Home Repository, as defined in <https://github.com/IlijazM/Home-Repository-Pattern>." Never restate this definition or the repository paths.
+- Start with: "This is a Home Repository, as defined in <https://github.com/IlijazM/Home-Repository-Pattern>."
+- Never restate this definition. Link to it.
 - List every repository it points to, with what it is and its location.
-- List every server it needs and keep the list current. When a server is gone, tell the person instead of guessing.
-- Keep it current: when repositories, servers or locations change, update it in the same change.
+- Keep it current: when repositories or their locations change, update it in the same change.
 
 ## Repository locations
 
@@ -33,18 +72,12 @@ Every repository lives at:
 
 `~` is the home directory of the current user. Examples of `<git-host>`: `github.com`, `gitlab.com`, or a self-hosted GitLab.
 
-## Working from a Home Repository
+## Going to a repository
 
-1. Read the task and decide which area it belongs to.
-2. Follow the matching pointer. If it leads to another Home Repository, read its `AGENTS.md` first, and keep following pointers until you reach the repository that needs the change.
-3. Make the change there, following that repository's own `AGENTS.md`/`CLAUDE.md`.
-4. If the task is ambiguous about which repository is meant, ask.
+In Claude Code on the web, attach GitHub repositories through the GitHub integration (e.g. `add_repo`) instead of cloning them. Everything else, and anything only reachable from a private network, goes through the steps below.
 
-### Going to a repository
-
-1. Check whether it is cloned at its location (see above).
+1. Check whether it is cloned at its location.
 2. If it is, use it, after pulling the latest state where that is safe.
 3. If not, clone it to exactly that location.
-4. If it is behind a **VPN**, clone and work on the server that has the VPN. The Home Repository that points to it says which server that is.
-
-In Claude Code on the web, attach GitHub repositories through the GitHub integration (e.g. `add_repo`) instead of cloning. Other hosts have to be cloned.
+4. If it is only reachable from a private network (a VPN, an internal host), clone it and work on a machine inside that network. The pointer says how to get there.
+5. If a location, host or machine named by a pointer no longer exists, tell the person instead of guessing.
